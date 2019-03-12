@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "debug": "node --inspect index.js",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest tests/unit/lib/output-generator.test.js",
+    "test:coverage": "jest tests/unit/lib/output-generator.test.js --coverage",
+    "test:watch": "jest tests/unit/lib/output-generator.test.js --watch"
   },
   "author": "",
   "license": "ISC",

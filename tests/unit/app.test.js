@@ -34,6 +34,7 @@ describe("Testing start()", () => {
   });
 
   it("debería llamar callback si la respuesta es positiva", async () => {
+
     askStubbed.returns({
       isConfirmed: true
     });
