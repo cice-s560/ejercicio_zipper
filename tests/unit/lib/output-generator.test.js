@@ -1,87 +1,65 @@
 const sinon = require("sinon");
 const fs = require("fs");
 const outputgenerator = require("../../../lib/output-generator");
-let outputStream;
 
-describe('Testing setListeners', () => {
 
-  //Creamos el contexto
+describe('Testing output-generator.js', () => {
+
+  let context, spyConsole, stubStreams, setListenersCall, outputStream;
+  const ref = '20';
+
+
   beforeAll(() => {
     context = sinon.createSandbox();
-    stubStreams = context.stub(fs, "createWriteStream");
-    spy1 = sinon.spy();
+    stubStreams = context.stub(fs, "close");
+    spyConsole = sinon.spy(console, 'log');
+    outputStream = outputgenerator.generateOutputStream('archivo_test');
+    setListenersCall = outputgenerator.setListeners(outputStream, '20');
   })
 
-  //Lo reseteamos al final
-  afterEach(() => {
+
+  afterAll(() => {
     context.restore();
+    outputStream.restore();
+    setListenersCall.restore();
+    spyConsole.restore();
   })
 
 
-  //Prueba 1 - funciones como tal (FUNCIONA)
   test("setListeners debería existir como función", () => {
     expect(typeof outputgenerator.setListeners === "function");
   })
 
 
-  // Prueba 2 - Funciones sin params pasados
-  test("generateOutputStream debería devolver una ruta a un archivo", () => {
-
-    let setListenersCall = outputgenerator.setListeners(outputStream, '20');
-    console.log(setListenersCall);
-    expect(setListenersCall).throw();
+  test("setListeners debería devolver un path", () => {
+    expect(setListenersCall).toHaveProperty('path');
   });
 
 
-  // Prueba 3 deberían devolver los datos esperados
-
-    test("generateOutputStream debería devolver una ruta a un archivo", () => {
-
-      let setListenersCall = outputgenerator.setListeners(outputStream, '20');
-      console.log(setListenersCall);
-      expect(setListenersCall.path).toBe('archivo.zip');
-    });
-});
+  test("setListeners su path debe corresponder a lo pasado", () => {
+    expect(setListenersCall.path).toBe('archivo_test.zip');
+  });
 
 
+  test("setListeners debería lanzar un log", () => {
+    expect(spyConsole.called).toBe(true);
+  })
 
 
-
-
-
-
-
-
-
-
-
-
-describe('Testing generateOutputStream', () => {
-
-
-
-  //Prueba 1 - funciones como tal
   test("generateOutputStream debería existir como función", () => {
     expect(typeof generateOutputStream === "function");
   })
 
-  test('generateOutputStream devuelve un stream', () => {
 
-    const streamModel = {
-      close: 'hola'
-    }
-    outputStream = generateOutputStream(filename);
-    expect(outputStream).toMatchObject(streamModel)
+  test('generateOutputStream debería devolver un objeto', () => {
+    expect(typeof outputStream === 'object')
   })
 
-/*
-  // Prueba 3 deberían devolver los datos esperados
-  test("generateOutputStream debería devolver una ruta a un archivo", () => {
 
-    const spy = spy.
-
-    expect(filepath).toBe(/(\\\\?([^\\/]*[\\/])*)([^\\/]+)$/);
+  test('generateOutputStream debería lanzar un error si no se le pasa filename', () => {
+    expect(() => {
+      outputgenerator.generateOutputStream();
+    }).toThrow();
   })
-*/
 
 })
